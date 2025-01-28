@@ -15,6 +15,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HybridApp.Installer", "Hybr
 EndProject
 Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "HybridApp.Installer", "HybridApp.Installer\HybridApp.Installer.wixproj", "{7729635B-CBC5-4F9D-B909-A2AE5444AA98}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HybridApp.Update", "HybridApp.Update", "{09B3F271-41A7-49AF-B16D-9A74FC172A30}"
+	ProjectSection(SolutionItems) = preProject
+		LATEST_REL.txt = LATEST_REL.txt
+		LATEST_VS.txt = LATEST_VS.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64

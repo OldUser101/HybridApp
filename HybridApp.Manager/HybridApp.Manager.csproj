@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
@@ -13,9 +13,6 @@
     <Nullable>enable</Nullable>
 	<WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Remove="Assets\HomePageBackdrop.png" />
-  </ItemGroup>
   <ItemGroup>
     <None Remove="AboutPage.xaml" />
     <None Remove="HelpPage.xaml" />
@@ -66,9 +63,6 @@
     <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="Assets\HomePageBackdrop2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Update="Assets\HybridAppHomePageDark.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -80,9 +74,6 @@
     <Page Update="AboutPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <None Update="Assets\HomePageBackdrop.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Assets\HybridApp.Manager.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
