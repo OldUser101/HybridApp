@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "HybridApp.Host (Package)": {
+      "commandName": "MsixPackage",
+      "nativeDebugging": true
+    },
+    "HybridApp.Host (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

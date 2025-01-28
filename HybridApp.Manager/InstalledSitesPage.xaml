@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="HybridApp.Manager.InstalledSitesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:HybridApp.Manager"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <Page.Resources>
+        <local:IgnoreCacheConverter x:Key="IgnoreCacheConverter"/>
+    </Page.Resources>
+    
+    <Grid Margin="10,0,10,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Canvas.ZIndex="1">
+            <TextBlock Text="Installed Sites"
+                   FontWeight="SemiBold"
+                   FontSize="30"
+                   Grid.Row="0"
+                   Padding="0,10,0,15"/>
+            <TextBlock Text="View and manage your installed sites. Press 'Settings' to change site options."
+                           Margin="0,0,0,10"/>
+            <TextBox Margin="0,0,0,10"
+                         x:Name="SearchBox"
+                         PlaceholderText="Search sites..."
+                         ToolTipService.ToolTip="Search installed sites"
+                         TextChanged="SearchBox_TextChanged"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Canvas.ZIndex="0">
+                <StackPanel Spacing="8">
+                    <TextBlock Text=""
+                           x:Name="NoResultsText"
+                           HorizontalAlignment="Center"
+                           Visibility="Collapsed"/>
+                    <Button x:Name="AddNewSite"
+                            HorizontalAlignment="Center"
+                            Visibility="Collapsed"
+                            Content="Add a new site"
+                            Click="AddNewSite_Click"/>
+                </StackPanel>
+                <ItemsRepeater x:Name="InstalledSites">
+                    
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="local:Site">
+                        <Button Margin="0,0,0,10"
+                                BorderThickness="1"
+                                Click="SettingsButton_Click"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch">
+                            <Grid Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="75"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="{Binding Icon, Converter={StaticResource IgnoreCacheConverter}}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0"/>
+                                <TextBlock Grid.Column="2" Text="{Binding URL}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0" FontSize="14" Foreground="{ThemeResource SystemColorGrayTextColor}"/>
+                                <Button x:Name="SettingsButton" Click="SettingsButton_Click" Grid.Column="3" Content="Settings" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75"/>
+                            </Grid>
+                        </Button>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

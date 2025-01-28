@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="HybridApp.Manager.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:HybridApp.Manager"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <Page.Resources>
+        <local:IgnoreCacheConverter x:Key="IgnoreCacheConverter"/>
+        <local:BooleanToVisibilityConverter x:Key="BooleanVisibilityConverter"/>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <Grid Margin="10,0,10,0" RowSpacing="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <Grid ColumnSpacing="24"
+                  Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Border Background="Transparent"
+                        CornerRadius="8"
+                        Grid.Column="1">
+                    <Image x:Name="ImageBackdrop"
+                        Stretch="UniformToFill"
+                        Height="300"
+                        VerticalAlignment="Top">
+                    </Image>
+                </Border>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="HybridApp Manager"
+                       FontWeight="SemiBold"
+                       FontSize="30"
+                       Padding="0,10,0,24"/>
+
+                    <Button HorizontalAlignment="Stretch"
+                            Style="{ThemeResource AccentButtonStyle}"
+                            x:Name="AddNewSiteButton"
+                            Click="AddNewSiteButton_Click">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8"
+                                    VerticalAlignment="Center">
+                            <FontIcon Glyph="&#xE710;"/>
+                            <TextBlock Text="New site"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button HorizontalAlignment="Stretch"
+                            x:Name="SettingsButton"
+                            Click="SettingsButton_Click">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8"
+                                    VerticalAlignment="Center">
+                            <FontIcon Glyph="&#xE713;"/>
+                            <TextBlock Text="Settings"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button HorizontalAlignment="Stretch"
+                            Foreground="Red"
+                            x:Name="ExitButton"
+                            Click="ExitButton_Click">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8"
+                                    VerticalAlignment="Center">
+                            <FontIcon Glyph="&#xE711;"/>
+                            <TextBlock Text="Exit"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Spacing="8">
+                <TextBlock Text="Quick Access:" FontWeight="SemiBold"/>
+                
+                <StackPanel Spacing="8">
+                    <TextBlock Text=""
+                       x:Name="NoResultsText"
+                       HorizontalAlignment="Center"
+                       Visibility="Collapsed"/>
+
+                    <Button x:Name="ManageQuickAccess"
+                        HorizontalAlignment="Center"
+                        Visibility="Collapsed"
+                        Content="Manage Quick Access"
+                        Click="ManageQuickAccess_Click"/>
+
+                    <Button x:Name="ManageInstalledSites"
+                        HorizontalAlignment="Center"
+                        Visibility="Collapsed"
+                        Content="Manage Installed Sites"
+                        Click="ManageInstalledSites_Click"/>
+                </StackPanel>
+
+                <GridView x:Name="InstalledSites">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="local:Site">
+                            <Grid Grid.Row="1" Width="200" Height="60">
+                                <Button Padding="0"
+                                    Width="200"
+                                    Height="60" 
+                                    HorizontalAlignment="Center" 
+                                    HorizontalContentAlignment="Stretch" 
+                                    VerticalContentAlignment="Stretch"
+                                    Click="SiteButton_Click">
+                                    <Grid HorizontalAlignment="Stretch" 
+                                      VerticalAlignment="Stretch" 
+                                      Width="Auto" 
+                                      Height="Auto">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Source="{Binding Icon, Converter={StaticResource IgnoreCacheConverter}}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                    </Grid>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+            </StackPanel> 
+        </Grid>
+    </ScrollViewer>
+</Page>

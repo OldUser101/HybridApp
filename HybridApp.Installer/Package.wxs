@@ -1,0 +1,35 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Package Name="HybridApp" 
+			Manufacturer="Nathan Gill" 
+			Version="1.0.0.0" 
+			Compressed="yes" 
+			UpgradeCode="f82f8da1-edf6-483e-b57c-cb955c3fcb9e">
+		<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+		
+		<MediaTemplate/>
+		
+		<Feature Id="Main" Title="HybridApp" Level="1">
+			<ComponentGroupRef Id="MainExecutables"/>
+		</Feature>
+	</Package>
+
+
+	<Fragment>
+		<!-- Main executables -->
+		<ComponentGroup Id="MainExecutables" Directory="INSTALLFOLDER">
+			<Component Id="ManagerExe" Guid="{D3F84424-4698-46D2-A4C4-9D135DECB778}">
+				<RemoveFolder Id="ManagerExe" On="uninstall"/>
+				<RemoveFolder Id="INSTALLFOLDER" On="uninstall" />
+				<RegistryValue Root='HKCU' 
+							   Key='Software\Nathan Gill\HybridApp\HybridApp.Manager'
+							   Name='HybridApp.Manager'
+							   Value='[INSTALLFOLDER]'
+							   Type='string'
+							   KeyPath='yes' />
+
+				<File Source="..\HybridApp.Manager\bin\x64\Release\net8.0-windows10.0.19041.0\win-x64\HybridApp.Manager.exe"/>
+			</Component>
+		</ComponentGroup>
+
+	</Fragment>
+</Wix>

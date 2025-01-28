@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<HybridAppConfiguration>
+	<HybridAppSites SiteDirectory="Sites\">
+		<Site Name="Site 1"
+			  URL="https://www.example.com" 
+			  Icon="favicon.ico"
+			  ID="ID_0001"/>
+		<Site Name="Site 2" 
+			  URL="https://www.example.com" 
+			  Icon="favicon.ico"
+			  ID="ID_0002"/>
+	</HybridAppSites>
+</HybridAppConfiguration>

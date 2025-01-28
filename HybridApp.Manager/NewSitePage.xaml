@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="HybridApp.Manager.NewSitePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:HybridApp.Manager"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <Page.Resources>
+        <DataTemplate x:Key="IconTypeTemplate" x:DataType="local:IconTypeSettingItem">
+            <Grid HorizontalAlignment="Stretch" 
+                          ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
+                            Spacing="8">
+                    <Border CornerRadius="4"
+                        BorderThickness="0"
+                        Grid.Column="0"
+                        Margin="0,0,15,0"
+                        Background="{ThemeResource SystemControlBaseLowAcrylicElementBrush}">
+                    <StackPanel HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch">
+                        <Image x:Name="DisplayIconPreview"
+                                       VerticalAlignment="Stretch"
+                                       HorizontalAlignment="Center"
+                                       Stretch="Uniform"
+                                       Source="{x:Bind ImageSource, Mode=TwoWay}"
+                                       Width="{Binding ActualHeight, ElementName=IconTypeSelection}"
+                                       Visibility="{x:Bind ImageShown, Mode=TwoWay}"/>
+                        <FontIcon Glyph="&#xE737;"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Visibility="{x:Bind PlaceholderShown, Mode=TwoWay}"
+                                  Height="{Binding ActualHeight, ElementName=IconTypeSelection}"
+                                  Width="{Binding ActualHeight, ElementName=IconTypeSelection}"/>
+                    </StackPanel>
+                </Border>
+                    <Button Content="Refresh"
+                            x:Name="IconRefreshButton"
+                            Width="{Binding ActualHeight, ElementName=IconTypeSelection}"
+                            Click="IconRefreshButton_Click"/>
+                </StackPanel>
+
+                <RadioButtons Header="Icon Source:"
+                              Grid.Column="1"
+                              x:Name="IconTypeSelection"
+                              SelectedIndex="{x:Bind SelectedIndex, Mode=TwoWay}"
+                              SelectionChanged="IconTypeSelection_SelectionChanged">
+                    <RadioButton x:Name="IconSourceWebsite" Content="Website Favicon (default)"/>
+                    <RadioButton x:Name="IconSourceGoogle" Content="Google Favicon API"/>
+                    <RadioButton x:Name="IconSourceCustom" Content="Custom Icon"/>
+                </RadioButtons>
+            </Grid>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="BooleanTemplate" x:DataType="local:BooleanSettingItem">
+            <CheckBox Margin="10" IsChecked="{x:Bind IsEnabled, Mode=TwoWay}" Content="{x:Bind Description}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="StringTemplate" x:DataType="local:StringSettingItem">
+            <Grid HorizontalAlignment="Stretch" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Text="{x:Bind Description}" 
+                           Margin="0,0,15,0"
+                           Grid.Column="0" 
+                           HorizontalAlignment="Left" 
+                           VerticalAlignment="Center"/>
+                
+                <TextBox Text="{x:Bind Value, Mode=TwoWay}"
+                         PlaceholderText="{x:Bind Placeholder}"
+                         Grid.Column="1" 
+                         HorizontalAlignment="Stretch" 
+                         VerticalAlignment="Center"
+                         IsSpellCheckEnabled="False"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ComboBoxTemplate" x:DataType="local:ComboBoxSettingItem">
+            <Grid HorizontalAlignment="Stretch" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{x:Bind Description}" Margin="0,0,15,0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{x:Bind Options}" SelectedItem="{x:Bind SelectedOption, Mode=TwoWay}" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+            </Grid>
+        </DataTemplate>
+
+        <local:SettingTemplateSelector x:Key="SettingSelector"
+                                   BooleanTemplate="{StaticResource BooleanTemplate}"
+                                   StringTemplate="{StaticResource StringTemplate}"
+                                   ComboBoxTemplate="{StaticResource ComboBoxTemplate}"
+                                   IconTypeTemplate="{StaticResource IconTypeTemplate}"/>
+    </Page.Resources>
+
+    <Grid Margin="10,0,10,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Canvas.ZIndex="1">
+            <TextBlock Text="New Site"
+                   FontWeight="SemiBold"
+                   FontSize="30"
+                   Grid.Row="0"
+                   Padding="0,10,0,15"/>
+            <TextBlock Text="Configure a new HybridApp site."
+                           Margin="0,0,0,10"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      VerticalScrollMode="Enabled"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="12"
+                        Margin="0,0,10,0">
+                <Expander ExpandDirection="Down"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Stretch"                         
+                          IsExpanded="True">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xE713;" Margin="10" VerticalAlignment="Center"/>
+                            <StackPanel Margin="10" Spacing="3">
+                                <TextBlock Text="General" FontWeight="SemiBold"/>
+                                <TextBlock Text="Core website settings" FontSize="14" Foreground="{ThemeResource SystemColorGrayTextColor}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Expander.Header>
+                    <ItemsRepeater ItemsSource="{x:Bind GeneralViewModel.Settings, Mode=TwoWay}" HorizontalAlignment="Stretch">
+                        <ItemsRepeater.Layout>
+                            <StackLayout Orientation="Vertical" Spacing="5"/>
+                        </ItemsRepeater.Layout>
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate>
+                                <ContentControl Content="{Binding}" 
+                                        ContentTemplateSelector="{StaticResource SettingSelector}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch"/>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                </Expander>
+
+                <Expander ExpandDirection="Down"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Stretch"                         
+                          IsExpanded="True">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xEC6C;" Margin="10" VerticalAlignment="Center"/>
+                            <StackPanel Margin="10" Spacing="3">
+                                <TextBlock Text="Icon" FontWeight="SemiBold"/>
+                                <TextBlock Text="Website icon display settings" FontSize="14" Foreground="{ThemeResource SystemColorGrayTextColor}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Expander.Header>
+                    <ItemsRepeater ItemsSource="{x:Bind IconViewModel.Settings, Mode=OneWay}" HorizontalAlignment="Stretch" x:Name="IconRepeater">
+                        <ItemsRepeater.Layout>
+                            <StackLayout Orientation="Vertical" Spacing="5"/>
+                        </ItemsRepeater.Layout>
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate>
+                                <ContentControl Content="{Binding}" 
+                                        ContentTemplateSelector="{StaticResource SettingSelector}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch"/>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="2" 
+                    HorizontalAlignment="Right" 
+                    Spacing="10" 
+                    Margin="32">
+            <TextBlock x:Name="ErrorCreate"
+                       Foreground="Red"
+                       Visibility="Collapsed"
+                       TextWrapping="WrapWholeWords"
+                       VerticalAlignment="Center"/>
+            <ProgressRing x:Name="ProcessingIcon"
+                          Visibility="Collapsed"
+                          IsActive="True"
+                          Background="Transparent"/>
+            <Button x:Name="InstallSiteButton" 
+                    Content="Install Website" 
+                    HorizontalAlignment="Right" 
+                    Width="200" 
+                    Style="{StaticResource AccentButtonStyle}"
+                    Click="InstallSiteButton_Click"/>
+            <Button x:Name="CancelButton"
+                    Content="Cancel" 
+                    HorizontalAlignment="Right" Width="200"
+                    Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Page>
