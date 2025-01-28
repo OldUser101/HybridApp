@@ -1,1 +1,2 @@
-https://github.com/OldUser101/HybridApp/releases/...
+https://raw.githubusercontent.com/OldUser101/HybridApp/refs/heads/master/LICENSE.txt
+https://raw.githubusercontent.com/OldUser101/HybridApp/refs/heads/master/README.md
