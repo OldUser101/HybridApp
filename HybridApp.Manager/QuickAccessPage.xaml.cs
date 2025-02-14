@@ -24,9 +24,9 @@ namespace HybridApp.Manager
     /// </summary>
     public sealed partial class QuickAccessPage : Page
     {
-        private List<Site> sites;
-        private ObservableCollection<Site> quickAccess;
-        private ObservableCollection<Site> available;
+        private List<Site> sites = new List<Site>();
+        private ObservableCollection<Site> quickAccess = new ObservableCollection<Site>();
+        private ObservableCollection<Site> available = new ObservableCollection<Site>();
 
         public QuickAccessPage()
         {

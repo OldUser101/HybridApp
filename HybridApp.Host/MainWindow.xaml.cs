@@ -163,6 +163,7 @@ namespace HybridApp.Host
 
         private void MainWebView2_NavigationStarting(CoreWebView2 sender, CoreWebView2NavigationStartingEventArgs args) 
         {
+            return;
             if (desiredSiteConfig is null)
                 return;
 

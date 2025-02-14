@@ -88,11 +88,14 @@ namespace HybridApp.Manager
             Directory.CreateDirectory(tmpDir);
 
             bool result = true;
-            RadioButtons rbs = InfoHelper.GetRadioButtonsInItemsRepeater(IconRepeater, 0);
+            RadioButtons? rbs = InfoHelper.GetRadioButtonsInItemsRepeater(IconRepeater, 0);
             if (rbs is null)
             {
-                result = false;
-                goto ERROR_RESULT;
+                ErrorCreate.Text = "An error occurred during processing. Check website details and try again.";
+                ErrorCreate.Visibility = Visibility.Visible;
+                ProcessingIcon.Visibility = Visibility.Collapsed;
+                InstallSiteButton.IsEnabled = true;
+                return;
             }
 
             switch (rbs.SelectedIndex) 
@@ -123,7 +126,6 @@ namespace HybridApp.Manager
             }
 
 
-            ERROR_RESULT:
             if (!result)
             {
                 ErrorCreate.Text = "An error occurred during processing. Check website details and try again.";
@@ -272,7 +274,7 @@ namespace HybridApp.Manager
 
         private void IconRefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            RadioButtons rbs = InfoHelper.GetRadioButtonsInItemsRepeater(IconRepeater, 0);
+            RadioButtons? rbs = InfoHelper.GetRadioButtonsInItemsRepeater(IconRepeater, 0);
             if (rbs is null)
                 return;
 

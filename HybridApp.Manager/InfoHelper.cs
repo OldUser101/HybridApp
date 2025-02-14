@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
+using Svg.Skia;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
@@ -75,17 +76,44 @@ namespace HybridApp.Manager
 
                         using (var inputStream = new MemoryStream(faviconData))
                         {
-                            var bitmap = SKBitmap.Decode(inputStream);
-
-                            if (bitmap == null)
+                            SKBitmap? bitmap = null;
+                            if (faviconUrl.ToUpper().EndsWith("SVG"))
                             {
-                                result = await GetIconGoogle(url, tmpDir);
+                                SKSvg svg = SKSvg.CreateFromStream(inputStream);
+
+                                if (svg is null || svg.Picture is null) 
+                                {
+                                    return await GetIconGoogle(url, tmpDir);
+                                }
+
+                                var width = (int)svg.Picture.CullRect.Width;
+                                var height = (int)svg.Picture.CullRect.Height;
+
+                                bitmap = new SKBitmap(width, height);
+                                using (var canvas = new SKCanvas(bitmap))
+                                {
+                                    canvas.Clear(SKColors.White);
+                                    canvas.DrawPicture(svg.Picture);
+                                }
+                            }
+                            else
+                            {
+                                bitmap = SKBitmap.Decode(inputStream);
+                            }
+
+                            if (bitmap is null)
+                            {
+                                return await GetIconGoogle(url, tmpDir);
                             }
                             else
                             {
                                 string outputFilePath = Path.Combine(tmpDir, "favicon.ico");
 
                                 SKImage image = SKImage.FromBitmap(bitmap);
+
+                                if (image is null)
+                                    return false;
+
                                 EncodeIcoFile(outputFilePath, image);
                             }
                         }
@@ -93,7 +121,7 @@ namespace HybridApp.Manager
                 }
                 else
                 {
-                    result = await GetIconGoogle(url, tmpDir);
+                    return await GetIconGoogle(url, tmpDir);
                 }
             }
             catch
@@ -124,7 +152,7 @@ namespace HybridApp.Manager
 
                         if (bitmap == null)
                         {
-                            throw new Exception();
+                            return false;
                         }
 
                         string outputFilePath = Path.Combine(tmpDir, "favicon.ico");
@@ -132,6 +160,10 @@ namespace HybridApp.Manager
                         SKImage image = SKImage.FromBitmap(bitmap);
                         EncodeIcoFile(outputFilePath, image);
                     }
+                }
+                else 
+                {
+                    return false;
                 }
             }
             catch
@@ -205,7 +237,7 @@ namespace HybridApp.Manager
             }
         }
 
-        public static T FindChildElement<T>(DependencyObject parent, string childName) where T : FrameworkElement
+        public static T? FindChildElement<T>(DependencyObject parent, string childName) where T : FrameworkElement
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
@@ -225,7 +257,7 @@ namespace HybridApp.Manager
             return null;
         }
 
-        public static RadioButtons GetRadioButtonsInItemsRepeater(ItemsRepeater repeater, int index)
+        public static RadioButtons? GetRadioButtonsInItemsRepeater(ItemsRepeater repeater, int index)
         {
             var element = repeater.TryGetElement(index) as ContentControl;
             if (element != null)
@@ -247,7 +279,7 @@ namespace HybridApp.Manager
 
     public class IgnoreCacheConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, string language)
+        public object? Convert(object value, Type targetType, object parameter, string language)
         {
             if (value is string uriString && !string.IsNullOrWhiteSpace(uriString))
             {
@@ -269,7 +301,7 @@ namespace HybridApp.Manager
 
     public class BooleanToVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, string language)
+        public object? Convert(object value, Type targetType, object parameter, string language)
         {
             if (value is bool visible)
             {

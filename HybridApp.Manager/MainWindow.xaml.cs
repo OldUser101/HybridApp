@@ -19,6 +19,7 @@ using Windows.Foundation.Collections;
 using Windows.Storage.Pickers;
 using WinRT.Interop;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -34,9 +35,12 @@ namespace HybridApp.Manager
         private bool _isInitialNavigation;
         private bool _isInitialActivation;
         public SiteConfiguration? settingsPageLastConfig = null;
+        private bool needsUpdate;
 
-        public MainWindow()
+        public MainWindow(bool promptForUpdate = false)
         {
+            this.needsUpdate = promptForUpdate;
+
             this.InitializeComponent();
 
             _isInitialActivation = true;
@@ -202,6 +206,42 @@ namespace HybridApp.Manager
             if (file is not null)
                 return file.Path;
             return "";
-        } 
+        }
+
+        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (needsUpdate)
+            {
+                ContentDialog dialog = new ContentDialog();
+
+                dialog.XamlRoot = this.Content.XamlRoot;
+                dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+                dialog.Title = "Update?";
+                dialog.PrimaryButtonText = "Update Now";
+                dialog.CloseButtonText = "Close";
+                dialog.DefaultButton = ContentDialogButton.Primary;
+                dialog.Content = new UpdatePage();
+
+                var result = await dialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary) 
+                {
+                    this.AppWindow.Hide();
+                    string targetPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Temp", "HybridApp");
+                    Directory.CreateDirectory(targetPath);
+                    targetPath = Path.Combine(targetPath, "latest.msi");
+                    if (UpdateHelper.DownloadUpdate(targetPath)) 
+                    {
+                        ProcessStartInfo psi = new ProcessStartInfo();
+                        psi.CreateNoWindow = true;
+                        psi.UseShellExecute = false;
+                        psi.Arguments = $"-i \"{targetPath}\"";
+                        psi.FileName = "msiexec.exe";
+                        Process.Start(psi);
+                        Application.Current.Exit();
+                    }
+                }
+            }
+        }
     }
 }

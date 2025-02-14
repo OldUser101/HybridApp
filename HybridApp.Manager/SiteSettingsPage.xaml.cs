@@ -30,12 +30,12 @@ namespace HybridApp.Manager
     /// </summary>
     public sealed partial class SiteSettingsPage : Page
     {
-        public GeneralSettingsViewModel GeneralViewModel { get; set; }
-        public IconSettingsViewModel IconViewModel { get; set; }
+        public GeneralSettingsViewModel GeneralViewModel { get; set; } = new GeneralSettingsViewModel();
+        public IconSettingsViewModel IconViewModel { get; set; } = new IconSettingsViewModel();
         private string customIconPath = "";
         private bool isInitialCustomIconSetting = true;
         private bool hasCustomIconChanged = false;
-        private SiteConfiguration settingsConfig;
+        private SiteConfiguration settingsConfig = new SiteConfiguration();
 
         public SiteSettingsPage()
         {
@@ -144,11 +144,14 @@ namespace HybridApp.Manager
             Directory.CreateDirectory(tmpDir);
 
             bool result = true;
-            RadioButtons rbs = InfoHelper.GetRadioButtonsInItemsRepeater(IconRepeater, 0);
+            RadioButtons? rbs = InfoHelper.GetRadioButtonsInItemsRepeater(IconRepeater, 0);
             if (rbs is null)
             {
-                result = false;
-                goto ERROR_RESULT;
+                ErrorSave.Text = "An error occurred during processing. Check website details and try again.";
+                ErrorSave.Visibility = Visibility.Visible;
+                ProcessingIcon.Visibility = Visibility.Collapsed;
+                SaveSiteButton.IsEnabled = true;
+                return;
             }
 
             switch (rbs.SelectedIndex)
@@ -195,7 +198,6 @@ namespace HybridApp.Manager
                     break;
             }
 
-            ERROR_RESULT:
             if (!result)
             {
                 ErrorSave.Text = "An error occurred during processing. Check website details and try again.";
@@ -370,7 +372,7 @@ namespace HybridApp.Manager
 
         private void IconRefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            RadioButtons rbs = InfoHelper.GetRadioButtonsInItemsRepeater(IconRepeater, 0);
+            RadioButtons? rbs = InfoHelper.GetRadioButtonsInItemsRepeater(IconRepeater, 0);
             if (rbs is null)
                 return;
             isInitialCustomIconSetting = false;

@@ -230,10 +230,15 @@ namespace HybridApp.Manager
             }
         }
 
-        private void HandleShortcut(string path, bool bEnabled, SiteConfiguration sc) 
+        private void HandleShortcut(string path, bool bEnabled, SiteConfiguration? sc) 
         {
             if (bEnabled)
             {
+                if (sc is null || this.config is null)
+                {
+                    return;
+                }
+
                 if (File.Exists(path))
                 {
                     File.Delete(path);

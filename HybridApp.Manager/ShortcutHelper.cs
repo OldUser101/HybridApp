@@ -27,7 +27,7 @@ namespace HybridApp.Manager
                 shortcut.Save();
 
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }

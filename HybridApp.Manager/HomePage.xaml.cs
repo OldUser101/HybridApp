@@ -26,7 +26,7 @@ namespace HybridApp.Manager
     /// </summary>
     public sealed partial class HomePage : Page
     {
-        private List<Site> sites;
+        private List<Site> sites = new List<Site>();
 
         public HomePage()
         {

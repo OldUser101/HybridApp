@@ -11,25 +11,25 @@ namespace HybridApp.Manager
 {
     public class HybridAppConfiguration
     {
-        public string SiteDirectory { get; set; }
-        public List<Site> Sites { get; set; }
+        public string SiteDirectory { get; set; } = string.Empty;
+        public List<Site> Sites { get; set; } = new List<Site>();
     }
 
     public class Site
     {
-        public string Name { get; set; }
-        public string URL { get; set; }
-        public string Icon { get; set; }
-        public string ID { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string URL { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
+        public string ID { get; set; } = string.Empty;
         public bool QuickAccess { get; set; }
     }
 
     public class SiteConfiguration
     {
-        public string Name { get; set; }
-        public string URL { get; set; }
-        public string ID { get; set; }
-        public string Icon { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string URL { get; set; } = string.Empty;
+        public string ID { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
         public bool QuickAccess { get; set; }
         public Dictionary<string, string> AdditionalAttributes { get; set; } = new Dictionary<string, string>();
     }
@@ -116,10 +116,10 @@ namespace HybridApp.Manager
             var Sites = xdoc.Descendants("Site")
                          .Select(site => new Site
                          {
-                             Name = site.Attribute("Name")?.Value,
-                             URL = site.Attribute("URL")?.Value,
+                             Name = site.Attribute("Name")?.Value ?? string.Empty,
+                             URL = site.Attribute("URL")?.Value ?? string.Empty,
                              Icon = ResolveIconPath(SiteDirectory, site.Attribute("ID")?.Value, site.Attribute("Icon")?.Value),
-                             ID = site.Attribute("ID")?.Value,
+                             ID = site.Attribute("ID")?.Value ?? string.Empty,
                              QuickAccess = site.Attribute("QuickAccess")?.Value == "true" ? true : false
                          })
                          .ToList();
@@ -127,7 +127,7 @@ namespace HybridApp.Manager
 
             return new HybridAppConfiguration
             {
-                SiteDirectory = SiteDirectory,
+                SiteDirectory = SiteDirectory ?? string.Empty,
                 Sites = Sites
             };
         }
@@ -135,7 +135,7 @@ namespace HybridApp.Manager
         public static SiteConfiguration ParseSiteConfiguration(string xmlFilePath, string siteDirectory)
         {
             XDocument doc = XDocument.Load(xmlFilePath);
-            XElement root = doc.Root;
+            XElement? root = doc.Root;
 
             if (root == null || root.Name != "SiteConfiguration")
             {
@@ -144,9 +144,9 @@ namespace HybridApp.Manager
 
             SiteConfiguration config = new SiteConfiguration
             {
-                Name = root.Attribute("Name")?.Value,
-                URL = root.Attribute("URL")?.Value,
-                ID = root.Attribute("ID")?.Value,
+                Name = root.Attribute("Name")?.Value ?? string.Empty,
+                URL = root.Attribute("URL")?.Value ?? string.Empty,
+                ID = root.Attribute("ID")?.Value ?? string.Empty,
                 Icon = ResolveIconPath(siteDirectory, root.Attribute("ID")?.Value, root.Attribute("Icon")?.Value),
                 QuickAccess = root.Attribute("QuickAccess")?.Value == "true" ? true : false
             };

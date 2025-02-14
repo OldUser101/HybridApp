@@ -22,7 +22,7 @@ namespace HybridApp.Manager
 {
     public sealed partial class InstalledSitesPage : Page
     {
-        private List<Site> sites;
+        private List<Site> sites = new List<Site>();
 
         public InstalledSitesPage()
         {

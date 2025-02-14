@@ -11,16 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HybridApp.Host", "HybridApp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HybridApp.Host", "HybridApp.Host\HybridApp.Host.csproj", "{B9AEC34F-9A29-47FB-B777-5E00A0EA6129}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HybridApp.Installer", "HybridApp.Installer", "{D3B76E0F-F652-4417-94F8-3C7C61EB5259}"
-EndProject
-Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "HybridApp.Installer", "HybridApp.Installer\HybridApp.Installer.wixproj", "{7729635B-CBC5-4F9D-B909-A2AE5444AA98}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HybridApp.Update", "HybridApp.Update", "{09B3F271-41A7-49AF-B16D-9A74FC172A30}"
-	ProjectSection(SolutionItems) = preProject
-		HybridApp.Update\LATEST_REL.txt = HybridApp.Update\LATEST_REL.txt
-		HybridApp.Update\LATEST_VS.txt = HybridApp.Update\LATEST_VS.txt
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -67,18 +57,6 @@ Global
 		{B9AEC34F-9A29-47FB-B777-5E00A0EA6129}.Release|x86.ActiveCfg = Release|x86
 		{B9AEC34F-9A29-47FB-B777-5E00A0EA6129}.Release|x86.Build.0 = Release|x86
 		{B9AEC34F-9A29-47FB-B777-5E00A0EA6129}.Release|x86.Deploy.0 = Release|x86
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Debug|ARM64.Build.0 = Debug|ARM64
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Debug|x64.ActiveCfg = Debug|x64
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Debug|x64.Build.0 = Debug|x64
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Debug|x86.ActiveCfg = Debug|x86
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Debug|x86.Build.0 = Debug|x86
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Release|ARM64.ActiveCfg = Release|ARM64
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Release|ARM64.Build.0 = Release|ARM64
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Release|x64.ActiveCfg = Release|x64
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Release|x64.Build.0 = Release|x64
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Release|x86.ActiveCfg = Release|x86
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +64,5 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3B146829-BA0B-4550-8EB1-3C796AFA1B7A} = {4A56D8E8-2C5E-4F83-84F0-C1200E7B8B10}
 		{B9AEC34F-9A29-47FB-B777-5E00A0EA6129} = {68745F46-91FB-4E1C-8A4A-F1F50FB99EDD}
-		{7729635B-CBC5-4F9D-B909-A2AE5444AA98} = {D3B76E0F-F652-4417-94F8-3C7C61EB5259}
 	EndGlobalSection
 EndGlobal
