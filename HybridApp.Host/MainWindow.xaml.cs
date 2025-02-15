@@ -28,6 +28,9 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using HybridApp.Manager;
 using Windows.Media;
 using Windows.Storage.Streams;
+using System.Runtime.InteropServices;
+using WinRT.Interop;
+using Windows.System;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -44,15 +47,67 @@ namespace HybridApp.Host
         public SiteConfiguration? desiredSiteConfig = null;
         private string lastGoodKnownPage = "";
 
+        private nint _hwnd;
+        private nint _oldWndProc;
+        private WndProcDelegate _newWndProc;
+
         public MainWindow()
         {
             _initialActivation = true;
             this.InitializeComponent();
+
+            _hwnd = WindowNative.GetWindowHandle(this);
+            _newWndProc = WndProc;
+            _oldWndProc = SetWindowLongPtr(_hwnd, -4, Marshal.GetFunctionPointerForDelegate(_newWndProc));
+
             this.Activated += OnWindowActivated;
             this.Closed += OnWindowClosed;
             AppTitleBar.Loaded += AppTitleBar_Loaded;
             AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
             MainWebView2.CoreWebView2Initialized += MainWebView2_CoreWebView2Initialized;
+        }
+
+        private delegate nint WndProcDelegate(nint hWnd, uint msg, nint wParam, nint lParam);
+
+        private nint WndProc(nint hWnd, uint msg, nint wParam, nint lParam)
+        {
+            const uint WM_GETMINMAXINFO = 0x0024;
+
+            if (msg == WM_GETMINMAXINFO)
+            {
+                MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
+
+                minMaxInfo.ptMinTrackSize.X = 780;
+                minMaxInfo.ptMinTrackSize.Y = 520;
+
+                Marshal.StructureToPtr(minMaxInfo, lParam, true);
+                return 0;
+            }
+
+            return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern nint SetWindowLongPtr(nint hWnd, int nIndex, nint dwNewLong);
+
+        [DllImport("user32.dll")]
+        private static extern nint CallWindowProc(nint lpPrevWndFunc, nint hWnd, uint msg, nint wParam, nint lParam);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int X;
+            public int Y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MINMAXINFO
+        {
+            public POINT ptReserved;
+            public POINT ptMaxSize;
+            public POINT ptMaxPosition;
+            public POINT ptMinTrackSize;
+            public POINT ptMaxTrackSize;
         }
 
         private async void OnWindowClosed(object sender, WindowEventArgs e) 
@@ -78,7 +133,7 @@ namespace HybridApp.Host
         private void OnWindowActivated(object sender, WindowActivatedEventArgs e) 
         {
             if (_initialActivation)
-            {
+            {               
                 ExtendsContentIntoTitleBar = true;
                 AppWindow thisWindow = this.AppWindow;
                 thisWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
@@ -104,6 +159,13 @@ namespace HybridApp.Host
 
                 SetTitleBar(AppTitleBar);
             }
+        }
+
+        private async void CoreWebView2_NewWindowRequested(CoreWebView2 sender, CoreWebView2NewWindowRequestedEventArgs args)
+        {
+            args.Handled = true;
+
+            await Launcher.LaunchUriAsync(new Uri(args.Uri));
         }
 
         private void AppTitleBar_Loaded(object sender, RoutedEventArgs e)
@@ -135,7 +197,8 @@ namespace HybridApp.Host
         {
             var coreWebView2 = sender.CoreWebView2;
             coreWebView2.NavigationCompleted += MainWebView2_NavigationComplete;
-            coreWebView2.NavigationStarting += MainWebView2_NavigationStarting;
+           // coreWebView2.NavigationStarting += MainWebView2_NavigationStarting;
+            coreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
         }
 
         private void CoreWebView2_DOMContentLoaded(CoreWebView2 sender, CoreWebView2DOMContentLoadedEventArgs args)

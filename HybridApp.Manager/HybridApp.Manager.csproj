@@ -14,8 +14,6 @@
 	<WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="AboutPage.xaml" />
-    <None Remove="HelpPage.xaml" />
     <None Remove="HomePage.xaml" />
     <None Remove="InstalledSitesPage.xaml" />
     <None Remove="NewSitePage.xaml" />
@@ -63,9 +61,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="AboutPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <None Update="Assets\HybridApp.Manager.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -74,9 +69,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="SiteSettingsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="HelpPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="SettingsPage.xaml">

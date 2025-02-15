@@ -38,11 +38,19 @@ namespace HybridApp.Manager
         public SiteConfiguration? settingsPageLastConfig = null;
         private bool needsUpdate;
 
+        private nint _hwnd;
+        private nint _oldWndProc;
+        private WndProcDelegate _newWndProc;
+
         public MainWindow(bool promptForUpdate = false)
         {
             this.needsUpdate = promptForUpdate;
 
             this.InitializeComponent();
+
+            _hwnd = WindowNative.GetWindowHandle(this);
+            _newWndProc = WndProc;
+            _oldWndProc = SetWindowLongPtr(_hwnd, -4, Marshal.GetFunctionPointerForDelegate(_newWndProc));
 
             _isInitialActivation = true;
             Activated += MainWindow_Activated;
@@ -51,6 +59,49 @@ namespace HybridApp.Manager
             NavView.SelectedItem = HomeItem;
 
             _items = new List<string>();
+        }
+
+        private delegate nint WndProcDelegate(nint hWnd, uint msg, nint wParam, nint lParam);
+
+        private nint WndProc(nint hWnd, uint msg, nint wParam, nint lParam)
+        {
+            const uint WM_GETMINMAXINFO = 0x0024;
+
+            if (msg == WM_GETMINMAXINFO)
+            {
+                MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
+
+                minMaxInfo.ptMinTrackSize.X = 780;
+                minMaxInfo.ptMinTrackSize.Y = 520;
+
+                Marshal.StructureToPtr(minMaxInfo, lParam, true);
+                return 0;
+            }
+
+            return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern nint SetWindowLongPtr(nint hWnd, int nIndex, nint dwNewLong);
+
+        [DllImport("user32.dll")]
+        private static extern nint CallWindowProc(nint lpPrevWndFunc, nint hWnd, uint msg, nint wParam, nint lParam);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int X;
+            public int Y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MINMAXINFO
+        {
+            public POINT ptReserved;
+            public POINT ptMaxSize;
+            public POINT ptMaxPosition;
+            public POINT ptMinTrackSize;
+            public POINT ptMaxTrackSize;
         }
 
         public void ContentNavigateToSettingsPage(SiteConfiguration config) 
@@ -191,12 +242,6 @@ namespace HybridApp.Manager
                     case "SettingsPage":
                         ContentFrame.Navigate(typeof(SettingsPage));
                         break;
-                    case "HelpPage":
-                        ContentFrame.Navigate(typeof(HelpPage));
-                        break;
-                    case "AboutPage":
-                        ContentFrame.Navigate(typeof(AboutPage));
-                        break;
                     case "ExitPage":
                         Application.Current.Exit();
                         break;
@@ -302,6 +347,33 @@ namespace HybridApp.Manager
                         Application.Current.Exit();
                     }
                 }
+            }
+        }
+
+        private void NavigationViewItem_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            NavigationViewItem? item = sender as NavigationViewItem;
+            if (item is not null) 
+            {
+                item.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0));   
+            }
+        }
+
+        private void NavigationViewItem_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            NavigationViewItem? item = sender as NavigationViewItem;
+            if (item is not null)
+            {
+                item.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0));
+            }
+        }
+
+        private void NavigationViewItem_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            NavigationViewItem? item = sender as NavigationViewItem;
+            if (item is not null)
+            {
+                item.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0));
             }
         }
     }
