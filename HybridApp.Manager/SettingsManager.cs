@@ -42,6 +42,51 @@ namespace HybridApp.Manager
             }
         }
 
+        public Dictionary<string, string> GetAdditionalOptions() 
+        {
+            if (this.config is null || this.errorLevel == 1) {
+                return new Dictionary<string, string>();
+            }
+            return this.config.AdditionalAttributes;
+        }
+
+        public void AddOption(string key, string value) 
+        {
+            if (this.config is null || this.errorLevel == 1) {
+                return;
+            }
+
+            if (!config.AdditionalAttributes.Keys.Contains(key)) 
+            {
+                config.AdditionalAttributes.Add(key, value);
+            }
+            else 
+            {
+                config.AdditionalAttributes[key] = value;
+            }
+        }
+
+        public void RemoveOption(string key)
+        {
+            if (this.config is null || this.errorLevel == 1) {
+                return;
+            }
+
+            if (config.AdditionalAttributes.Keys.Contains(key))
+            {
+                config.AdditionalAttributes.Remove(key);
+            }
+        }
+
+        public void WriteConfig() 
+        {
+            if (this.config is null || this.errorLevel == 1) {
+                return;
+            }
+
+            SettingsHelper.WriteConfiguration(Path.Combine(this.HOST_PATH, "config.xml"), this.config);
+        }
+
         private int GetNextId() 
         {
             if (this.config is null || this.errorLevel == 1) {

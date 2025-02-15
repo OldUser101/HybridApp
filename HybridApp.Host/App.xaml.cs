@@ -30,6 +30,7 @@ namespace HybridApp.Host
     public partial class App : Application
     {
         public SettingsManager MainSettingsManager { get; private set; }
+        public string AppId { get; private set; } = "";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -37,7 +38,18 @@ namespace HybridApp.Host
         /// </summary>
         public App()
         {
-            AUMIDHelper.SetCurrentProcessExplicitAppUserModelID($"HybridApp_Host_{Guid.NewGuid()}");
+            string[] cmdargs = Environment.GetCommandLineArgs();
+
+            foreach (string arg in cmdargs) 
+            {
+                string parsed = arg.Trim();
+                if (parsed.StartsWith("ID_"))
+                {
+                    this.AppId = parsed;
+                }
+            }
+
+            AUMIDHelper.SetCurrentProcessExplicitAppUserModelID($"HybridApp_Host_{this.AppId}");
             this.InitializeComponent();
             MainSettingsManager = new SettingsManager();
         }
@@ -48,24 +60,16 @@ namespace HybridApp.Host
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            string[] cmdargs = Environment.GetCommandLineArgs();
             SiteConfiguration? desiredConfig = null;
-            foreach (string arg in cmdargs) 
+
+            SiteConfiguration sc = MainSettingsManager.GetSiteConfig(this.AppId);
+            if (MainSettingsManager.errorLevel != 1)
             {
-                string parsed = arg.Trim();
-                if (parsed.StartsWith("ID_")) 
-                {
-                    SiteConfiguration sc = MainSettingsManager.GetSiteConfig(parsed);
-                    if (MainSettingsManager.errorLevel != 1)
-                    {
-                        desiredConfig = sc;
-                    }
-                    else 
-                    {
-                        MainSettingsManager.errorLevel = 0;
-                        break;
-                    }
-                }
+                desiredConfig = sc;
+            }
+            else 
+            {
+                MainSettingsManager.errorLevel = 0;
             }
 
             m_window = new MainWindow();

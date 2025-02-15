@@ -39,6 +39,30 @@ namespace HybridApp.Manager
         {
             this.InitializeComponent();
             MainSettingsManager = new SettingsManager();
+
+            ApplicationTheme? requestedTheme = null;
+
+            Dictionary<string, string> options = MainSettingsManager.GetAdditionalOptions();
+            if (options.Keys.Contains("ApplicationTheme"))
+            {
+                int theme = Convert.ToInt32(options["ApplicationTheme"]);
+
+                if (theme == 0 || theme == 1) 
+                {
+                    requestedTheme = (ApplicationTheme)theme;
+                }
+                else 
+                {
+                    MainSettingsManager.AddOption("ApplicationTheme", "2");
+                    MainSettingsManager.WriteConfig();
+                }
+            }
+            
+            if (requestedTheme is not null)
+            {
+                this.RequestedTheme = requestedTheme ?? ApplicationTheme.Light;
+            }
+
             //if (UpdateHelper.CheckForUpdate(1000)) 
             //{
             //    needsUpdate = true;

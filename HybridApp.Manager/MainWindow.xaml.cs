@@ -20,6 +20,7 @@ using Windows.Storage.Pickers;
 using WinRT.Interop;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -68,18 +69,73 @@ namespace HybridApp.Manager
                 thisWindow.SetIcon(@"Assets\HybridApp.Manager.ico");
                 thisWindow.Title = "HybridApp Manager";
                 SetTitleBar(AppTitleBar);
+
+                Color modified1;
+                Color modified2;
+
+                Color WHITE = Color.FromArgb(255, 255, 255, 255);
+                Color BLACK = Color.FromArgb(255, 0, 0, 0);
+
+                if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+                {
+
+                    modified1 = LightenColor(BLACK, 0.1f);
+                    modified2 = LightenColor(BLACK, 0.2f);
+                }
+                else
+                {
+                    modified1 = DarkenColor(WHITE, 0.2f);
+                    modified2 = DarkenColor(WHITE, 0.1f);
+                }
+
+                AppWindowTitleBar thisTitleBar = this.AppWindow.TitleBar;
+                thisTitleBar.ButtonBackgroundColor = Color.FromArgb(0, 0, 0, 0);
+                thisTitleBar.ButtonHoverBackgroundColor = modified2;
+                thisTitleBar.ButtonPressedBackgroundColor = modified1;
+                thisTitleBar.ButtonInactiveBackgroundColor = Color.FromArgb(0, 0, 0, 0);
+
+                if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+                {
+                    thisTitleBar.ButtonForegroundColor = Color.FromArgb(255, 255, 255, 255);
+                    thisTitleBar.ButtonHoverForegroundColor = Color.FromArgb(255, 255, 255, 255);
+                    thisTitleBar.ButtonPressedForegroundColor = Color.FromArgb(255, 255, 255, 255);
+                }
+                else
+                {
+                    thisTitleBar.ButtonForegroundColor = Color.FromArgb(255, 0, 0, 0);
+                    thisTitleBar.ButtonHoverForegroundColor = Color.FromArgb(255, 0, 0, 0);
+                    thisTitleBar.ButtonPressedForegroundColor = Color.FromArgb(255, 0, 0, 0);
+                }
+
                 _isInitialActivation = false;
             }
+
             if (args.WindowActivationState == WindowActivationState.Deactivated)
             {
-                TitleBarTextBlock.Foreground =
-                    (SolidColorBrush)App.Current.Resources["WindowCaptionForegroundDisabled"];
+                TitleBarTextBlock.Foreground = (SolidColorBrush)App.Current.Resources["WindowCaptionForegroundDisabled"];
             }
             else
             {
-                TitleBarTextBlock.Foreground =
-                    (SolidColorBrush)App.Current.Resources["WindowCaptionForeground"];
+                TitleBarTextBlock.Foreground = (SolidColorBrush)App.Current.Resources["WindowCaptionForeground"];
             }
+        }
+
+        public static Color LightenColor(Color color, float factor)
+        {
+            byte r = (byte)Math.Min(255, color.R + (255 - color.R) * factor);
+            byte g = (byte)Math.Min(255, color.G + (255 - color.G) * factor);
+            byte b = (byte)Math.Min(255, color.B + (255 - color.B) * factor);
+
+            return Color.FromArgb(color.A, r, g, b);
+        }
+
+        public static Color DarkenColor(Color color, float factor)
+        {
+            byte r = (byte)Math.Max(0, color.R - color.R * factor);
+            byte g = (byte)Math.Max(0, color.G - color.G * factor);
+            byte b = (byte)Math.Max(0, color.B - color.B * factor);
+
+            return Color.FromArgb(color.A, r, g, b);
         }
 
         private void NavView_DisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
@@ -206,6 +262,11 @@ namespace HybridApp.Manager
             if (file is not null)
                 return file.Path;
             return "";
+        }
+
+        public void SetTheme(ApplicationTheme theme) 
+        {
+            App.Current.RequestedTheme = theme;
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)

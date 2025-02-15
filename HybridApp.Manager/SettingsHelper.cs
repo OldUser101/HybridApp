@@ -12,6 +12,7 @@ namespace HybridApp.Manager
     public class HybridAppConfiguration
     {
         public string SiteDirectory { get; set; } = string.Empty;
+        public Dictionary<string, string> AdditionalAttributes { get; set; } = new Dictionary<string, string>();
         public List<Site> Sites { get; set; } = new List<Site>();
     }
 
@@ -101,6 +102,11 @@ namespace HybridApp.Manager
 
             var root = new XElement("HybridAppConfiguration", hybridAppSites);
 
+            foreach (var kvp in configuration.AdditionalAttributes)
+            {
+                root.SetAttributeValue(kvp.Key, kvp.Value);
+            }
+
             var xdoc = new XDocument(new XDeclaration("1.0", "utf-8", "yes"), root);
             xdoc.Save(filePath);
         }
@@ -112,6 +118,19 @@ namespace HybridApp.Manager
             var SiteDirectory = xdoc.Descendants("HybridAppSites")
                                 .FirstOrDefault()?
                                 .Attribute("SiteDirectory")?.Value;
+
+            var Config = xdoc.Descendants("HybridAppConfiguration").FirstOrDefault();
+
+            Dictionary<string, string> AdditionalAttributes = new Dictionary<string, string>();
+
+            if (Config is not null)
+            {
+                foreach (var attribute in Config.Attributes())
+                {
+                    string attributeName = attribute.Name.LocalName;
+                    AdditionalAttributes.Add(attributeName, attribute.Value);
+                }
+            }
 
             var Sites = xdoc.Descendants("Site")
                          .Select(site => new Site
@@ -127,6 +146,7 @@ namespace HybridApp.Manager
 
             return new HybridAppConfiguration
             {
+                AdditionalAttributes = AdditionalAttributes,
                 SiteDirectory = SiteDirectory ?? string.Empty,
                 Sites = Sites
             };
